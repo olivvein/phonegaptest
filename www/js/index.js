@@ -690,7 +690,7 @@ var app = {
 
     },
     askAllDatas: function(event) {
-        buffLen = 10000;
+        buffLen = myBle.data;
         dataBuffer = new Uint8Array(buffLen);
         modal.show();
         requested = "sendAll";
@@ -717,6 +717,7 @@ var app = {
         requested = 'infos';
         if (messageInput.value.indexOf("sendAll2") != -1) {
             requested = 'sendAll2';
+            buffLen = myBle.data;
             myBle.left = 0;
             myBle.right = 0;
 
