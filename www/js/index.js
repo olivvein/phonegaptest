@@ -74,7 +74,7 @@ function startServer(wwwroot) {
 
         }, function() {});
     } else {
-        console.log('CorHttpd plugin not available/ready.');
+        console.log('CorHttpd plugin not available/ready for start.');
     }
 }
 
@@ -487,6 +487,7 @@ var app = {
     prepareData: function(event) { // save data to text file
         resultDiv.innerHTML = resultDiv.innerHTML + "Debut Prepare <br/>";
         resultDiv.scrollTop = resultDiv.scrollHeight;
+        console.log("Debut Prepare");
 
         var stringArray = Array.prototype.slice.call(dataBuffer).map(String);
         var myData = "";
@@ -621,22 +622,24 @@ var app = {
             var liness = myData.split("$$");
             var result = [];
             liness.forEach(function(line) {
+                //console.log(line);
+
                 if (line.indexOf("#") != -1) {
                     console.log("End Of Transmission");
                 } else {
-                    console.log(line);
+                    //console.log(line);
                     var dataType = line.split("$");
                     var timeBig = dataType[0].substring(1);
                     var compressedData = dataType[1].substring(1);
                     var dLength = dataType[2].substring(1);
-                    console.log("received length:" + dLength);
-                    console.log("")
+                    //console.log("received length:" + dLength);
+                    //console.log("")
 
                     for (var jj = 0; jj < dLength; jj++) {
 
                         var mm = jj * 4;
                         var myChunk = compressedData.substring(jj, jj + 4);
-                        console.log(myChunk);
+                        //console.log(myChunk);
                         var isStar = myChunk.indexOf("*");
                         myChunk = myChunk.substring(isStar + 1);
                         myChunk = timeBig + myChunk;
@@ -690,7 +693,7 @@ var app = {
 
     },
     askAllDatas: function(event) {
-        buffLen = myBle.data;
+        buffLen = myBle.data * 8;
         dataBuffer = new Uint8Array(buffLen);
         modal.show();
         requested = "sendAll";
@@ -701,7 +704,6 @@ var app = {
     graphView: function(event) {
         buffLen = 10000;
         dataBuffer = new Uint8Array(buffLen);
-
         requested = "graph";
         messageInput.hidden = true;
         zoomView.hidden = false;
@@ -715,9 +717,11 @@ var app = {
         buffLen = 10000;
         dataBuffer = new Uint8Array(buffLen);
         requested = 'infos';
-        if (messageInput.value.indexOf("sendAll2") != -1) {
+        if (messageInput.value.indexOf("data") != -1) {
+            buffLen = myBle.data * 8;
+            dataBuffer = new Uint8Array(buffLen);
+            modal.show();
             requested = 'sendAll2';
-            buffLen = myBle.data;
             myBle.left = 0;
             myBle.right = 0;
 
