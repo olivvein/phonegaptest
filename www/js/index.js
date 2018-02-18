@@ -624,21 +624,27 @@ var app = {
             liness.forEach(function(line) {
                 //console.log(line);
 
+
                 if (line.indexOf("#") != -1) {
                     console.log("End Of Transmission");
                 } else {
                     //console.log(line);
+                    console.log("line :");
+                    console.log(line);
                     var dataType = line.split("$");
                     var timeBig = dataType[0].substring(1);
+                    var isStar1 = timeBig.indexOf("*");
+                    timeBig = timeBig.substring(isStar1 + 1);
+                    console.log(timeBig);
                     var compressedData = dataType[1].substring(1);
-                    var dLength = dataType[2].substring(1);
-                    //console.log("received length:" + dLength);
+                    var dLength = myDecode(dataType[2].substring(1));
+                    console.log("received length:" + dLength + " = " + compressedData.length);
                     //console.log("")
 
                     for (var jj = 0; jj < dLength; jj++) {
-
+                        console.log("chunk:");
                         var mm = jj * 4;
-                        var myChunk = compressedData.substring(jj, jj + 4);
+                        var myChunk = compressedData.substring(mm, mm + 4);
                         //console.log(myChunk);
                         var isStar = myChunk.indexOf("*");
                         myChunk = myChunk.substring(isStar + 1);
@@ -650,6 +656,7 @@ var app = {
                         theArr.push(time);
                         theArr.push(gauche);
                         theArr.push(droite);
+                        console.log(time + "," + gauche + "," + droite);
                         result.push(theArr);
                     }
                 }
@@ -662,7 +669,7 @@ var app = {
                     allDatas = allDatas + rr[0] + ',' + rr[1] + ',' + rr[2] + '\n';
                 } else {
                     console.log("Wrong data :");
-                    console.log(rr);
+                    //console.log(rr);
                 }
             });
             app.requestAndroidFS();
@@ -718,6 +725,15 @@ var app = {
         dataBuffer = new Uint8Array(buffLen);
         requested = 'infos';
         if (messageInput.value.indexOf("data") != -1) {
+            buffLen = myBle.data * 8;
+            dataBuffer = new Uint8Array(buffLen);
+            modal.show();
+            requested = 'sendAll2';
+            myBle.left = 0;
+            myBle.right = 0;
+
+        }
+        if (messageInput.value.indexOf("batt") != -1) {
             buffLen = myBle.data * 8;
             dataBuffer = new Uint8Array(buffLen);
             modal.show();
